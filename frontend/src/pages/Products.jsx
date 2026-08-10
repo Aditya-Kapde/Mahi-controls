@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import clsx from "clsx";
 import MainLayout from "../components/layout/MainLayout";
@@ -6,11 +6,8 @@ import PageHero from "../components/ui/PageHero";
 import SectionHeader from "../components/ui/SectionHeader";
 import CTASection from "../components/ui/CTASection";
 import ProductCard from "../components/ui/ProductCard";
-import {
-  FEATURED_PRODUCTS,
-  PRODUCT_CATEGORIES,
-  PRODUCT_FILTER_CATEGORIES,
-} from "../constants/products";
+import { Loader2 } from "lucide-react";
+import { api } from "../services/api";
 
 const containerVariants = {
   hidden: {},
@@ -29,13 +26,34 @@ const itemVariants = {
 };
 
 function Products() {
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [activeCategoryId, setActiveCategoryId] = useState("All");
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const [cats, prods] = await Promise.all([
+          api.getCategories(),
+          api.getProducts({ size: 100 })
+        ]);
+        setCategories(cats || []);
+        setProducts(prods.content || []);
+      } catch (err) {
+        console.error("Failed to fetch products page data", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchInitialData();
+  }, []);
 
   const filteredProducts =
-    activeFilter === "All"
-      ? FEATURED_PRODUCTS
-      : FEATURED_PRODUCTS.filter(
-          (product) => product.filterCategory === activeFilter
+    activeCategoryId === "All"
+      ? products
+      : products.filter(
+          (product) => product.categoryId === activeCategoryId
         );
 
   return (
@@ -60,34 +78,20 @@ function Products() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-80px" }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-8"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
-            {PRODUCT_CATEGORIES.map((category) => (
+            {categories.map((category) => (
               <motion.div
-                key={category.title}
+                key={category.id}
                 variants={itemVariants}
                 className="bg-[#F8FAFC]/50 border border-slate-200/80 rounded-2xl p-8 hover:border-slate-300 hover:shadow-md transition-all duration-300"
               >
                 <h3 className="text-xl font-bold text-[#0F172A] tracking-tight mb-3">
-                  {category.title}
+                  {category.name}
                 </h3>
                 <p className="text-[#334155] text-sm leading-relaxed mb-6">
-                  {category.description}
+                  {category.description || 'Explore our sourcing options in this category.'}
                 </p>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {category.items.map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-center gap-2 text-sm text-[#334155]"
-                    >
-                      <span
-                        className="h-1.5 w-1.5 rounded-full bg-[#F97316] flex-shrink-0"
-                        aria-hidden="true"
-                      />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
               </motion.div>
             ))}
           </motion.div>
@@ -108,48 +112,77 @@ function Products() {
             role="tablist"
             aria-label="Filter products by category"
           >
-            {PRODUCT_FILTER_CATEGORIES.map((filter) => (
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeCategoryId === "All"}
+              onClick={() => setActiveCategoryId("All")}
+              className={clsx(
+                "px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wide transition-all duration-200 min-h-[44px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F97316]",
+                activeCategoryId === "All"
+                  ? "bg-[#F97316] text-white shadow-md"
+                  : "bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:text-[#0F172A]"
+              )}
+            >
+              All Products
+            </button>
+            {categories.map((cat) => (
               <button
-                key={filter}
+                key={cat.id}
                 type="button"
                 role="tab"
-                aria-selected={activeFilter === filter}
-                onClick={() => setActiveFilter(filter)}
+                aria-selected={activeCategoryId === cat.id}
+                onClick={() => setActiveCategoryId(cat.id)}
                 className={clsx(
                   "px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wide transition-all duration-200 min-h-[44px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F97316]",
-                  activeFilter === filter
+                  activeCategoryId === cat.id
                     ? "bg-[#F97316] text-white shadow-md"
                     : "bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:text-[#0F172A]"
                 )}
               >
-                {filter}
+                {cat.name}
               </button>
             ))}
           </div>
 
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-80px" }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-            role="tabpanel"
-          >
-            {filteredProducts.map((product) => (
-              <ProductCard
-                key={product.title}
-                product={product}
-                ctaLabel="Request Quote"
-                ctaTo="/rfq"
-                variants={itemVariants}
-              />
-            ))}
-          </motion.div>
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center py-12">
+              <Loader2 className="w-10 h-10 text-[#F97316] animate-spin mb-4" />
+              <p className="text-slate-500 font-medium">Loading products...</p>
+            </div>
+          ) : (
+            <>
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-80px" }}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                role="tabpanel"
+              >
+                {filteredProducts.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={{
+                      title: product.title,
+                      category: product.categoryName || 'General',
+                      image: product.images && product.images.length > 0 ? product.images[0].imageUrl : 'https://placehold.co/600x400/F8FAFC/334155?text=No+Image',
+                      description: product.shortDescription || product.fullDescription || '',
+                      slug: product.slug
+                    }}
+                    ctaLabel="Request Quote"
+                    ctaTo={`/rfq?product=${product.slug}`}
+                    variants={itemVariants}
+                  />
+                ))}
+              </motion.div>
 
-          {filteredProducts.length === 0 && (
-            <p className="text-center text-[#334155] text-sm">
-              No products match this filter. Try another category or send your requirement directly.
-            </p>
+              {filteredProducts.length === 0 && (
+                <p className="text-center text-[#334155] text-sm py-12">
+                  No active products match this category. Try another category or send your requirement directly.
+                </p>
+              )}
+            </>
           )}
         </div>
       </section>

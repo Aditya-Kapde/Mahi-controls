@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: indussource-backend
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/indussource_db}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:89b3f3b9c6a7d5e4f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME:mw7mctzi}
+  api-key: ${CLOUDINARY_API_KEY:342164263751117}
+  api-secret: ${CLOUDINARY_API_SECRET:gSDA9EVB1u3Sjo0vG_vgDbZWle4}
+
+cors:
+  allowed-origins: http://localhost:5173

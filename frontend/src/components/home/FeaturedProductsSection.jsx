@@ -1,6 +1,8 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import ProductCard from "../ui/ProductCard";
-import { FEATURED_PRODUCTS } from "../../constants/products";
+import { Loader2 } from "lucide-react";
+import { api } from "../../services/api";
 
 const containerVariants = {
   hidden: {},
@@ -24,6 +26,23 @@ const cardVariants = {
 };
 
 function FeaturedProductsSection() {
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      try {
+        const response = await api.getProducts({ featured: true, size: 6 });
+        setProducts(response.content || []);
+      } catch (error) {
+        console.error("Failed to fetch featured products", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchFeatured();
+  }, []);
+
   return (
     <section className="w-full bg-[#F8FAFC] py-24 border-t border-slate-100 z-10 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16">
@@ -40,23 +59,40 @@ function FeaturedProductsSection() {
           </p>
         </div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {FEATURED_PRODUCTS.slice(0, 6).map((product) => (
-            <ProductCard
-              key={product.title}
-              product={product}
-              ctaLabel="Learn More"
-              ctaTo="/products"
-              variants={cardVariants}
-            />
-          ))}
-        </motion.div>
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-12">
+            <Loader2 className="w-10 h-10 text-[#F97316] animate-spin mb-4" />
+            <p className="text-slate-500 font-medium">Loading featured products...</p>
+          </div>
+        ) : products.length === 0 ? (
+          <div className="text-center py-12 text-slate-500">
+            No featured products available at the moment.
+          </div>
+        ) : (
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {products.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={{
+                  title: product.title,
+                  category: product.categoryName || 'General',
+                  image: product.images && product.images.length > 0 ? product.images[0].imageUrl : 'https://placehold.co/600x400/F8FAFC/334155?text=No+Image',
+                  description: product.shortDescription || product.fullDescription || '',
+                  slug: product.slug
+                }}
+                ctaLabel="Learn More"
+                ctaTo={`/products`}
+                variants={cardVariants}
+              />
+            ))}
+          </motion.div>
+        )}
       </div>
     </section>
   );

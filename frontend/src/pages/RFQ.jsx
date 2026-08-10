@@ -6,6 +6,7 @@ import SectionHeader from "../components/ui/SectionHeader";
 import FormField from "../components/ui/FormField";
 import { getInputClasses } from "../utils/formStyles";
 import { getFieldError } from "../utils/formValidation";
+import { api } from "../services/api";
 
 const PRODUCT_CATEGORY_OPTIONS = [
   "Road Construction Machinery",
@@ -32,6 +33,8 @@ function RFQ() {
   const [formData, setFormData] = useState(initialFormState);
   const [errors, setErrors] = useState({});
   const [submissionNotice, setSubmissionNotice] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -44,6 +47,7 @@ function RFQ() {
     if (submissionNotice) {
       setSubmissionNotice("");
     }
+    if (isSuccess) setIsSuccess(false);
   };
 
   const validateForm = () => {
@@ -62,7 +66,7 @@ function RFQ() {
     return Object.values(nextErrors).every((error) => !error);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!validateForm()) {
@@ -70,9 +74,34 @@ function RFQ() {
       return;
     }
 
-    setSubmissionNotice(
-      "Online RFQ submission will be available shortly. Your entered information has not been sent."
-    );
+    setIsLoading(true);
+    setSubmissionNotice("");
+
+    const rfqPayload = {
+      companyName: formData.companyName,
+      contactPerson: formData.fullName,
+      email: formData.email,
+      phone: formData.phone,
+      projectLocation: formData.deliveryLocation,
+      message: `Timeline: ${formData.expectedTimeline}\n\nCategory: ${formData.productCategory}\n\nSpecs: ${formData.technicalSpecifications}`,
+      items: [
+        {
+          productName: formData.productRequirement,
+          quantity: parseInt(formData.quantity) || 1
+        }
+      ]
+    };
+
+    try {
+      await api.submitRfq(rfqPayload);
+      setIsSuccess(true);
+      setFormData(initialFormState);
+      setSubmissionNotice("Your RFQ has been successfully submitted! Our team will contact you shortly.");
+    } catch (error) {
+      setSubmissionNotice("There was an error submitting your RFQ. Please try again or contact us directly.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -346,7 +375,7 @@ function RFQ() {
                 <div
                   role="status"
                   aria-live="polite"
-                  className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-900 leading-relaxed"
+                  className={`rounded-xl border px-4 py-4 text-sm leading-relaxed ${isSuccess ? 'border-green-200 bg-green-50 text-green-900' : 'border-amber-200 bg-amber-50 text-amber-900'}`}
                 >
                   {submissionNotice}
                 </div>
@@ -355,13 +384,13 @@ function RFQ() {
               <div className="space-y-4">
                 <button
                   type="submit"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#F97316] hover:bg-orange-600 active:scale-95 text-white font-bold rounded-full shadow-md hover:shadow-lg hover:shadow-orange-500/20 transition-all duration-300 text-sm tracking-wide focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F97316] min-h-[44px]"
+                  disabled={isLoading}
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#F97316] hover:bg-orange-600 active:scale-95 text-white font-bold rounded-full shadow-md hover:shadow-lg hover:shadow-orange-500/20 transition-all duration-300 text-sm tracking-wide focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F97316] min-h-[44px] disabled:opacity-70 disabled:pointer-events-none"
                 >
-                  Submit RFQ
+                  {isLoading ? 'Submitting...' : 'Submit RFQ'}
                 </button>
                 <p className="text-xs text-slate-500 leading-relaxed max-w-2xl">
-                  Form submission will be connected to the business inquiry system in the
-                  production version. Until then, no data entered here is transmitted or stored.
+                  Form submission will be securely processed by our backend system.
                 </p>
               </div>
             </form>
