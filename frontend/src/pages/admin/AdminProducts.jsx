@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit2, Trash2, X, Image as ImageIcon, Save, CheckCircle } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Image as ImageIcon, Save, CheckCircle, Package, Pencil } from 'lucide-react';
 import { api } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import ImageUploader from '../../components/admin/ImageUploader';
@@ -31,7 +31,8 @@ const AdminProducts = () => {
         api.getAdminProducts(token, { size: 100 }),
         api.getCategories()
       ]);
-      setProducts(prodRes.content || []);
+      const productList = Array.isArray(prodRes) ? prodRes : (prodRes?.content || []);
+      setProducts(productList);
       setCategories(catRes || []);
     } catch (error) {
       console.error("Failed to fetch data", error);
@@ -231,7 +232,7 @@ const AdminProducts = () => {
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <button
-                          onClick={() => handleToggleStatus(product)}
+                          onClick={() => toggleStatus(product)}
                           className={`px-3 py-1.5 rounded text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 ${
                             product.status === "ACTIVE" 
                               ? "bg-slate-100 text-slate-700 hover:bg-slate-200" 
@@ -241,14 +242,14 @@ const AdminProducts = () => {
                           {product.status === "ACTIVE" ? "Archive" : "Activate"}
                         </button>
                         <button
-                          onClick={() => handleEditClick(product)}
+                          onClick={() => handleOpenModal(product)}
                           className="p-1.5 text-slate-400 hover:text-[#F97316] hover:bg-orange-50 rounded transition-colors"
                           title="Edit Product"
                         >
                           <Pencil className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => handleDeleteProduct(product.id)}
+                          onClick={() => handleArchive(product.id)}
                           className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
                           title="Delete Product"
                         >

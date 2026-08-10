@@ -26,7 +26,8 @@ const AdminProjects = () => {
     setIsLoading(true);
     try {
       const response = await api.getAdminProjects(token, { size: 100 });
-      setProjects(response.content || []);
+      const projectList = Array.isArray(response) ? response : (response?.content || []);
+      setProjects(projectList);
     } catch (error) {
       console.error("Failed to fetch projects", error);
     } finally {

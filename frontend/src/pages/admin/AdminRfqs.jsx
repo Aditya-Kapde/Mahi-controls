@@ -27,7 +27,8 @@ const AdminRfqs = () => {
     setIsLoading(true);
     try {
       const response = await api.getAdminRfqs(token);
-      setRfqs(response?.content || []);
+      const rfqList = Array.isArray(response) ? response : (response?.content || []);
+      setRfqs(rfqList);
     } catch (error) {
       console.error("Failed to fetch RFQs", error);
     } finally {
