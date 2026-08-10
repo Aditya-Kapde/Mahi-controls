@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8080/api/v1';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://indussource-backend.onrender.com/api/v1';
 
 async function fetchWithConfig(endpoint, options = {}) {
   const url = `${BASE_URL}${endpoint}`;
@@ -101,7 +101,7 @@ export const api = {
     formData.append('folder', folder);
     
     // Custom fetch for FormData
-    const response = await fetch(`http://localhost:8080/api/v1/admin/media/upload`, {
+    const response = await fetch(`${BASE_URL}/admin/media/upload`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`
