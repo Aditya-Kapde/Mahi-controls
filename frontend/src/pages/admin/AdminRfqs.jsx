@@ -168,7 +168,7 @@ const AdminRfqs = () => {
 
       {/* Data Table */}
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm flex-1 flex flex-col overflow-hidden">
-        <div className="overflow-x-auto flex-1">
+        <div className="w-full overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0 flex-1">
           <table className="w-full text-left text-sm whitespace-nowrap">
             <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-medium sticky top-0 z-10">
               <tr>
@@ -236,7 +236,7 @@ const AdminRfqs = () => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 right-0 w-full max-w-xl bg-white shadow-2xl z-50 flex flex-col overflow-hidden border-l border-slate-200"
+              className="fixed inset-y-0 right-0 w-full sm:max-w-xl bg-white shadow-2xl z-50 flex flex-col overflow-hidden border-l border-slate-200"
             >
               {/* Drawer Header */}
               <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">

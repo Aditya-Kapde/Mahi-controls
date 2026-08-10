@@ -58,7 +58,7 @@ function Projects() {
     const fetchProjects = async () => {
       try {
         const response = await api.getProjects({ size: 100 });
-        setProjects(response.content || []);
+        setProjects(response || []);
       } catch (err) {
         console.error("Failed to fetch projects", err);
       } finally {

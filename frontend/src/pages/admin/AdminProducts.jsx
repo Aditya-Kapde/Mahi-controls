@@ -170,62 +170,98 @@ const AdminProducts = () => {
 
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm flex-1 overflow-hidden flex flex-col">
         <div className="overflow-x-auto flex-1">
-          <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-medium">
+          <div className="w-full overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+          <table className="w-full text-sm text-left text-slate-500">
+            <thead className="text-xs text-slate-700 uppercase bg-slate-50 border-b border-slate-200">
               <tr>
-                <th className="px-6 py-4 w-16">Image</th>
-                <th className="px-6 py-4">Title</th>
-                <th className="px-6 py-4">Category</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4">Featured</th>
-                <th className="px-6 py-4 text-right">Actions</th>
+                <th scope="col" className="px-6 py-4 font-semibold text-slate-900">Product</th>
+                <th scope="col" className="px-6 py-4 font-semibold text-slate-900">Category</th>
+                <th scope="col" className="px-6 py-4 font-semibold text-slate-900 text-center">Featured</th>
+                <th scope="col" className="px-6 py-4 font-semibold text-slate-900 text-center">Status</th>
+                <th scope="col" className="px-6 py-4 font-semibold text-slate-900 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody>
               {isLoading ? (
-                <tr><td colSpan="6" className="px-6 py-8 text-center text-slate-500">Loading products...</td></tr>
+                <tr><td colSpan="5" className="px-6 py-8 text-center text-slate-500">Loading products...</td></tr>
               ) : products.length === 0 ? (
-                <tr><td colSpan="6" className="px-6 py-8 text-center text-slate-500">No products found.</td></tr>
+                <tr>
+                  <td colSpan="5" className="px-6 py-8 text-center text-slate-500">
+                    No products found.
+                  </td>
+                </tr>
               ) : (
-                products.map((prod) => (
-                  <tr key={prod.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-6 py-3">
-                      <div className="w-10 h-10 rounded bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden">
-                        {prod.images && prod.images.length > 0 ? (
-                          <img src={prod.images[0].imageUrl} alt={prod.title} className="w-full h-full object-cover" />
-                        ) : (
-                          <ImageIcon className="w-5 h-5 text-slate-400" />
-                        )}
+                products.map((product) => (
+                  <tr key={product.id} className="bg-white border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                    <td className="px-6 py-4 font-medium text-slate-900 flex items-center gap-3 min-w-[250px]">
+                      {product.images && product.images.length > 0 ? (
+                        <img src={product.images[0].imageUrl} alt={product.title} className="w-10 h-10 rounded object-cover border border-slate-200" />
+                      ) : (
+                        <div className="w-10 h-10 rounded bg-slate-100 flex items-center justify-center border border-slate-200">
+                          <Package className="w-5 h-5 text-slate-400" />
+                        </div>
+                      )}
+                      <div>
+                        <div className="font-semibold text-slate-900">{product.title}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 font-semibold text-slate-900">{prod.title}</td>
-                    <td className="px-6 py-4 text-slate-600">{prod.categoryName || 'Uncategorized'}</td>
-                    <td className="px-6 py-4">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
-                        prod.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-slate-100 text-slate-600'
-                      }`}>
-                        {prod.status}
-                      </span>
+                    <td className="px-6 py-4 font-medium text-slate-700 whitespace-nowrap">
+                      {product.categoryName || "N/A"}
                     </td>
-                    <td className="px-6 py-4">
-                      {prod.isFeatured && <CheckCircle className="w-5 h-5 text-[#F97316]" />}
+                    <td className="px-6 py-4 text-center whitespace-nowrap">
+                      {product.isFeatured ? (
+                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-amber-100 text-amber-800">
+                          Featured
+                        </span>
+                      ) : (
+                        <span className="text-slate-400">-</span>
+                      )}
                     </td>
-                    <td className="px-6 py-4 text-right space-x-2">
-                      <button onClick={() => toggleStatus(prod)} className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors text-xs font-semibold" title="Toggle Status">
-                        {prod.status === 'ACTIVE' ? 'Archive' : 'Activate'}
-                      </button>
-                      <button onClick={() => handleOpenModal(prod)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button onClick={() => handleArchive(prod.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                    <td className="px-6 py-4 text-center whitespace-nowrap">
+                      {product.status === "ACTIVE" ? (
+                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-800">
+                          ACTIVE
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-slate-100 text-slate-800">
+                          ARCHIVED
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => handleToggleStatus(product)}
+                          className={`px-3 py-1.5 rounded text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 ${
+                            product.status === "ACTIVE" 
+                              ? "bg-slate-100 text-slate-700 hover:bg-slate-200" 
+                              : "bg-green-50 text-green-700 hover:bg-green-100 border border-green-200"
+                          }`}
+                        >
+                          {product.status === "ACTIVE" ? "Archive" : "Activate"}
+                        </button>
+                        <button
+                          onClick={() => handleEditClick(product)}
+                          className="p-1.5 text-slate-400 hover:text-[#F97316] hover:bg-orange-50 rounded transition-colors"
+                          title="Edit Product"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteProduct(product.id)}
+                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                          title="Delete Product"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
               )}
             </tbody>
           </table>
+        </div>
         </div>
       </div>
 

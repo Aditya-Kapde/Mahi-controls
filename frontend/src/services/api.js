@@ -129,15 +129,19 @@ export const api = {
   removeProductImage: (id, publicId, token) => fetchWithConfig(`/admin/products/${id}/images/${publicId}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } }),
 
   // Projects
-  getProjects: (params = {}) => {
+  getProjects: async (params = {}) => {
     const query = new URLSearchParams();
     if (params.page !== undefined) query.append('page', params.page);
     if (params.size) query.append('size', params.size);
     const queryString = query.toString();
-    return fetchWithConfig(`/projects${queryString ? `?${queryString}` : ''}`);
+    const data = await fetchWithConfig(`/projects${queryString ? `?${queryString}` : ''}`);
+    return Array.isArray(data) ? data : (data.content || []);
   },
   getProjectBySlug: (slug) => fetchWithConfig(`/projects/${slug}`),
-  getFeaturedProjects: () => fetchWithConfig(`/projects/featured`),
+  getFeaturedProjects: async () => {
+    const data = await fetchWithConfig(`/projects/featured`);
+    return Array.isArray(data) ? data : (data.content || []);
+  },
   
   // Admin Projects
   getAdminProjects: (token, params = {}) => {

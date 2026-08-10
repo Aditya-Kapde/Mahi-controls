@@ -44,7 +44,7 @@ function HeroContent() {
       {/* Main Heading */}
       <motion.h1
         variants={itemVariants}
-        className="text-4xl sm:text-5xl md:text-6xl lg:text-[72px] font-extrabold text-white leading-[1.05] tracking-tight mb-8"
+        className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.05] tracking-tight mb-8"
       >
         Engineering <br />
         Procurement, <br />
