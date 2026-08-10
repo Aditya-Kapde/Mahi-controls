@@ -137,6 +137,7 @@ export const api = {
     return fetchWithConfig(`/projects${queryString ? `?${queryString}` : ''}`);
   },
   getProjectBySlug: (slug) => fetchWithConfig(`/projects/${slug}`),
+  getFeaturedProjects: () => fetchWithConfig(`/projects/featured`),
   
   // Admin Projects
   getAdminProjects: (token, params = {}) => {

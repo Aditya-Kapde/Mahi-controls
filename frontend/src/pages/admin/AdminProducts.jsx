@@ -15,7 +15,7 @@ const AdminProducts = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [formData, setFormData] = useState({
-    title: '', categoryId: '', shortDescription: '', fullDescription: '', specifications: '', isFeatured: false
+    title: '', categoryId: '', shortDescription: '', fullDescription: '', specifications: '', isFeatured: false, status: 'ACTIVE'
   });
   const [productImages, setProductImages] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
@@ -49,13 +49,14 @@ const AdminProducts = () => {
         shortDescription: product.shortDescription || '',
         fullDescription: product.fullDescription || '',
         specifications: product.specifications || '',
-        isFeatured: product.isFeatured || false
+        isFeatured: product.isFeatured || false,
+        status: product.status || 'ACTIVE'
       });
       setProductImages(product.images || []);
     } else {
       setEditingProduct(null);
       setFormData({
-        title: '', categoryId: '', shortDescription: '', fullDescription: '', specifications: '', isFeatured: false
+        title: '', categoryId: '', shortDescription: '', fullDescription: '', specifications: '', isFeatured: false, status: 'ACTIVE'
       });
       setProductImages([]);
     }
@@ -121,6 +122,26 @@ const AdminProducts = () => {
       }
     } else {
       setProductImages(prev => prev.filter(i => i.publicId !== img.publicId));
+    }
+  };
+
+  const toggleStatus = async (prod) => {
+    try {
+      const newStatus = prod.status === 'ACTIVE' ? 'ARCHIVED' : 'ACTIVE';
+      const payload = {
+        title: prod.title,
+        categoryId: prod.categoryId,
+        shortDescription: prod.shortDescription,
+        fullDescription: prod.fullDescription,
+        specifications: prod.specifications,
+        isFeatured: prod.isFeatured,
+        status: newStatus
+      };
+      await api.updateProduct(prod.id, payload, token);
+      await fetchData();
+    } catch (error) {
+      console.error("Failed to toggle status", error);
+      alert("Error updating status");
     }
   };
 
@@ -190,6 +211,9 @@ const AdminProducts = () => {
                       {prod.isFeatured && <CheckCircle className="w-5 h-5 text-[#F97316]" />}
                     </td>
                     <td className="px-6 py-4 text-right space-x-2">
+                      <button onClick={() => toggleStatus(prod)} className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors text-xs font-semibold" title="Toggle Status">
+                        {prod.status === 'ACTIVE' ? 'Archive' : 'Activate'}
+                      </button>
                       <button onClick={() => handleOpenModal(prod)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
                         <Edit2 className="w-4 h-4" />
                       </button>
@@ -250,9 +274,18 @@ const AdminProducts = () => {
                     <textarea rows="3" value={formData.specifications} onChange={e => setFormData({...formData, specifications: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#F97316] outline-none font-mono text-xs" />
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <input type="checkbox" id="featured" checked={formData.isFeatured} onChange={e => setFormData({...formData, isFeatured: e.target.checked})} className="w-4 h-4 text-[#F97316] rounded border-slate-300 focus:ring-[#F97316]" />
-                    <label htmlFor="featured" className="text-sm font-medium text-slate-700">Feature on Homepage</label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="flex items-center gap-2 mt-8">
+                      <input type="checkbox" id="featured" checked={formData.isFeatured} onChange={e => setFormData({...formData, isFeatured: e.target.checked})} className="w-4 h-4 text-[#F97316] rounded border-slate-300 focus:ring-[#F97316]" />
+                      <label htmlFor="featured" className="text-sm font-medium text-slate-700">Feature on Homepage</label>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-semibold text-slate-700">Status</label>
+                      <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#F97316] outline-none bg-white">
+                        <option value="ACTIVE">ACTIVE</option>
+                        <option value="ARCHIVED">ARCHIVED</option>
+                      </select>
+                    </div>
                   </div>
 
                   <div className="pt-4 border-t border-slate-200">

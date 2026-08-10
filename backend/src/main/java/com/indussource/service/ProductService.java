@@ -64,8 +64,8 @@ public class ProductService {
                 .shortDescription(request.getShortDescription())
                 .fullDescription(request.getFullDescription())
                 .specifications(request.getSpecifications())
-                .isFeatured(request.getIsFeatured())
-                .status(Product.ProductStatus.ACTIVE)
+                .isFeatured(request.getIsFeatured() != null ? request.getIsFeatured() : false)
+                .status(request.getStatus() != null ? request.getStatus() : Product.ProductStatus.ACTIVE)
                 .build();
 
         return mapToResponse(productRepository.save(product));
@@ -82,10 +82,13 @@ public class ProductService {
         product.setTitle(request.getTitle());
         // Skip updating slug unless title changes significantly (simplified for now)
         product.setCategory(category);
-        product.setShortDescription(request.getShortDescription());
-        product.setFullDescription(request.getFullDescription());
         product.setSpecifications(request.getSpecifications());
-        product.setIsFeatured(request.getIsFeatured());
+        if (request.getIsFeatured() != null) {
+            product.setIsFeatured(request.getIsFeatured());
+        }
+        if (request.getStatus() != null) {
+            product.setStatus(request.getStatus());
+        }
 
         return mapToResponse(productRepository.save(product));
     }

@@ -21,4 +21,6 @@ public class ProductCreateRequest {
     private String specifications;
 
     private Boolean isFeatured = false;
+    
+    private com.indussource.model.Product.ProductStatus status;
 }
