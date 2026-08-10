@@ -94,7 +94,13 @@ function Navbar() {
               </ul>
             </nav>
 
-            <div className="hidden lg:flex items-center flex-shrink-0">
+            <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
+              <Link
+                to="/admin/login"
+                className="text-[13px] font-semibold text-slate-500 hover:text-slate-800 transition-colors py-2 px-3 rounded-md hover:bg-slate-50"
+              >
+                Staff Portal
+              </Link>
               <Link
                 to="/rfq"
                 className="inline-flex items-center justify-center px-6 py-2.5 bg-[#F97316] hover:bg-orange-600 active:bg-orange-700 text-white font-bold rounded-lg shadow-md hover:shadow-lg hover:shadow-orange-500/20 active:scale-95 transition-all duration-200 text-sm tracking-wide focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F97316] whitespace-nowrap"
@@ -170,10 +176,17 @@ function Navbar() {
             </ul>
           </nav>
         </div>
-
-        <div className="p-4 border-t border-slate-100 bg-slate-50">
+        <div className="p-4 border-t border-slate-100 bg-slate-50 space-y-3">
+          <Link
+            to="/admin/login"
+            onClick={closeMobileMenu}
+            className="flex w-full items-center justify-center px-6 py-3.5 border-2 border-slate-200 hover:border-slate-300 text-slate-600 font-bold rounded-xl transition-all duration-200 text-[15px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F97316]"
+          >
+            Staff Portal
+          </Link>
           <Link
             to="/rfq"
+            onClick={closeMobileMenu}
             className="flex w-full items-center justify-center px-6 py-4 bg-[#F97316] hover:bg-orange-600 active:bg-orange-700 text-white font-bold rounded-xl shadow-lg shadow-orange-500/20 active:scale-[0.98] transition-all duration-200 text-[15px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F97316]"
           >
             Request a Quote

@@ -129,6 +129,11 @@ function Footer() {
 
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-semibold text-slate-500">
           <p>© 2026 Mahi Controls. All rights reserved.</p>
+          <div className="flex items-center gap-4">
+            <Link to="/admin/login" className="hover:text-slate-300 transition-colors">
+              Staff Login
+            </Link>
+          </div>
         </div>
       </div>
     </motion.footer>

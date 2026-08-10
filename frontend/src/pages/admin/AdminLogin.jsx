@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Lock, Mail, ChevronRight, AlertCircle } from 'lucide-react';
@@ -8,11 +8,17 @@ const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login, isLoading } = useAuth();
+  const { login, isLoading, token } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const from = location.state?.from?.pathname || "/admin/dashboard";
+
+  useEffect(() => {
+    if (token) {
+      navigate('/admin/dashboard', { replace: true });
+    }
+  }, [token, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -85,9 +91,11 @@ const AdminLogin = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#F97316] focus:border-[#F97316] bg-white text-slate-900 transition-colors shadow-sm outline-none placeholder:text-slate-400"
+                    className="block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#F97316] focus:border-[#F97316] bg-white text-slate-900 transition-colors shadow-sm outline-none placeholder:text-slate-400 min-h-[44px]"
                     placeholder="admin@indussource.com"
                     autoComplete="email"
+                    inputMode="email"
+                    autoCapitalize="none"
                   />
                 </div>
               </div>
@@ -105,7 +113,7 @@ const AdminLogin = () => {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#F97316] focus:border-[#F97316] bg-white text-slate-900 transition-colors shadow-sm outline-none placeholder:text-slate-400"
+                    className="block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#F97316] focus:border-[#F97316] bg-white text-slate-900 transition-colors shadow-sm outline-none placeholder:text-slate-400 min-h-[44px]"
                     placeholder="••••••••"
                     autoComplete="current-password"
                   />
