@@ -39,6 +39,8 @@ const AdminRfqs = () => {
   const filteredRfqs = useMemo(() => {
     return rfqs.filter(rfq => {
       const matchesTab = activeTab === 'ALL' || rfq.status === activeTab;
+      if (!searchQuery) return matchesTab;
+      
       const searchLower = searchQuery.toLowerCase();
       const matchesSearch = 
         (rfq.companyName && rfq.companyName.toLowerCase().includes(searchLower)) ||
