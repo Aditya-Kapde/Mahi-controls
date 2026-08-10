@@ -1,6 +1,6 @@
 -- Seed default admin user if not exists
--- Password corresponds to BCrypt hash for "Admin@12345"
-INSERT INTO users (email, password_hash, full_name, role, is_active, created_at, updated_at)
+-- Uses standard 'password' column name
+INSERT INTO users (email, password, full_name, role, is_active, created_at, updated_at)
 SELECT 'admin@indussource.com', 
        '$2a$10$e0MYzXyjpJS7Pd0RVvHwHe1f1qVn.4rQ5N3O5vH9H9Gg2b.B/5S9.', 
        'System Administrator', 
