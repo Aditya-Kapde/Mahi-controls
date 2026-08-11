@@ -17,6 +17,7 @@ com\indussource\security\SecurityConfig.class
 com\indussource\dto\ProjectRequest.class
 com\indussource\dto\RfqResponse$RfqItemDto.class
 com\indussource\IndusSourceBackendApplication.class
+com\indussource\controller\HealthController.class
 com\indussource\model\RfqItem.class
 com\indussource\controller\AdminProductController.class
 com\indussource\model\Product$ProductStatus.class

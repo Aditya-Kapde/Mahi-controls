@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Inbox, Package, LogOut, Search, Bell, ShieldCheck, Menu, X } from 'lucide-react';
+import { Outlet, NavLink, useLocation, useNavigate, Link } from 'react-router-dom';
+import { LayoutDashboard, Inbox, Package, LogOut, Search, Bell, ShieldCheck, Menu, X, Home } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const AdminLayout = () => {
@@ -63,6 +63,13 @@ const AdminLayout = () => {
       </nav>
 
       <div className="p-4 border-t border-slate-800">
+        <Link 
+          to="/"
+          className="w-full flex items-center gap-3 px-3 py-2 mb-3 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+        >
+          <Home className="w-5 h-5 text-slate-500" />
+          Homepage
+        </Link>
         <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-slate-800/50 mb-3">
           <div className="w-8 h-8 rounded-full bg-[#F97316] flex items-center justify-center text-white font-bold text-sm">
             AD
