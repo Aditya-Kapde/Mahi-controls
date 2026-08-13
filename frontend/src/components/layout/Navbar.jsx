@@ -53,14 +53,19 @@ function Navbar() {
               <Link
                 to="/"
                 onClick={closeMobileMenu}
-                className="flex items-center gap-2.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F97316] rounded-md px-1.5 py-1"
+                className="flex items-center gap-2.5 shrink-0 group py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded-md px-1.5"
                 aria-label="Mahi Controls Home"
               >
                 <img 
                   src="/logo.jpeg" 
-                  alt="Mahi Controls Logo" 
-                  className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105" 
+                  alt="Mahi Controls" 
+                  className="h-9 w-auto object-contain transition-transform group-hover:scale-105" 
                 />
+                <div className="flex flex-col justify-center leading-none">
+                  <span className="text-lg font-black tracking-tight text-slate-900 group-hover:text-amber-600 transition-colors">
+                    Mahi <span className="text-amber-600">Controls</span>
+                  </span>
+                </div>
               </Link>
             </div>
 
