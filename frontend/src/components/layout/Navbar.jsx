@@ -56,13 +56,11 @@ function Navbar() {
                 className="flex items-center gap-2.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F97316] rounded-md px-1.5 py-1"
                 aria-label="Mahi Controls Home"
               >
-                <Factory
-                  className="h-8 w-8 text-[#F97316] group-hover:text-orange-600 transition-colors duration-300 flex-shrink-0"
-                  aria-hidden="true"
+                <img 
+                  src="/logo.jpeg" 
+                  alt="Mahi Controls Logo" 
+                  className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105" 
                 />
-                <span className="text-lg sm:text-xl font-extrabold tracking-tight text-[#0F172A] group-hover:text-slate-700 transition-colors duration-300 whitespace-nowrap">
-                  Mahi <span className="text-[#F97316]">Controls</span>
-                </span>
               </Link>
             </div>
 

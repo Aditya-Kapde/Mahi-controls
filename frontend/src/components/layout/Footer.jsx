@@ -51,13 +51,11 @@ function Footer() {
               className="flex items-center gap-2.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F97316] rounded-md px-1 py-1"
               aria-label="Mahi Controls Home"
             >
-              <Factory
-                className="h-7 w-7 text-[#F97316] group-hover:text-orange-600 transition-colors duration-300"
-                aria-hidden="true"
+              <img 
+                src="/logo.jpeg" 
+                alt="Mahi Controls Logo" 
+                className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105" 
               />
-              <span className="text-lg font-extrabold tracking-tight text-white group-hover:text-slate-200 transition-colors duration-300">
-                Mahi <span className="text-[#F97316]">Controls</span>
-              </span>
             </Link>
 
             <p className="text-slate-400 text-sm leading-relaxed max-w-sm">
