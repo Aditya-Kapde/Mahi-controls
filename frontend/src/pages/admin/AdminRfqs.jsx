@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, X, Building2, Mail, Phone, MapPin, Calendar, Clock, ArrowRight, MessageSquare, Plus, Save } from 'lucide-react';
+import { Search, Filter, X, Building2, Mail, Phone, MapPin, Calendar, Clock, ArrowRight, MessageSquare, Plus, Save, Download } from 'lucide-react';
 import { api } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
+import { exportRfqsToCsv } from '../../utils/exportCsv';
 
 const STATUS_TABS = ['ALL', 'NEW', 'CONTACTED', 'QUOTATION_SENT', 'CLOSED_WON', 'CLOSED_LOST'];
 
@@ -155,17 +156,28 @@ const AdminRfqs = () => {
           })}
         </div>
         
-        <div className="relative w-full sm:w-72">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-            <Search className="h-4 w-4" />
+        <div className="flex gap-3 w-full sm:w-auto">
+          <div className="relative flex-1 sm:w-72">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+              <Search className="h-4 w-4" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search company, email, location..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="block w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#F97316] focus:border-[#F97316] text-sm shadow-sm"
+            />
           </div>
-          <input
-            type="text"
-            placeholder="Search company, email, location..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="block w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#F97316] focus:border-[#F97316] text-sm shadow-sm"
-          />
+          <button
+            type="button"
+            onClick={() => exportRfqsToCsv(filteredRfqs && filteredRfqs.length > 0 ? filteredRfqs : rfqs, 'rfq_pipeline_export')}
+            className="inline-flex items-center justify-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg shadow-sm transition-all hover:border-slate-300"
+            title="Export RFQs to CSV/Excel"
+          >
+            <Download className="w-4 h-4 text-slate-500"/>
+            <span>Export CSV</span>
+          </button>
         </div>
       </div>
 

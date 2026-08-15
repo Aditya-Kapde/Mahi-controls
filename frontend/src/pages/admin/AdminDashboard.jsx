@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, Inbox, FileText, CheckCircle, ArrowRight } from 'lucide-react';
+import { TrendingUp, Inbox, FileText, CheckCircle, ArrowRight, Download } from 'lucide-react';
 import { api } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
+import { exportRfqsToCsv } from '../../utils/exportCsv';
 
 const StatCard = ({ title, value, icon: Icon, trend, trendLabel, delay }) => (
   <motion.div
@@ -93,11 +94,22 @@ const AdminDashboard = () => {
         transition={{ duration: 0.4, delay: 0.5, ease: 'easeOut' }}
         className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden"
       >
-        <div className="px-6 py-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
+        <div className="px-6 py-5 border-b border-slate-200 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center bg-slate-50/50">
           <h2 className="text-lg font-semibold text-slate-800 font-poppins">Recent RFQ Pipeline Activity</h2>
-          <Link to="/admin/rfqs" className="text-sm font-medium text-[#F97316] hover:text-orange-700 flex items-center gap-1 transition-colors">
-            View All Pipeline <ArrowRight className="w-4 h-4" />
-          </Link>
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => exportRfqsToCsv(rfqs || [], 'admin_leads_backup')}
+              className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-colors shadow-sm"
+              title="Download leads backup as CSV"
+            >
+              <Download className="w-3.5 h-3.5 text-amber-700"/>
+              <span className="hidden sm:inline">Download Leads Backup (CSV)</span>
+            </button>
+            <Link to="/admin/rfqs" className="text-sm font-medium text-[#F97316] hover:text-orange-700 flex items-center gap-1 transition-colors">
+              View All Pipeline <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
         
         <div className="overflow-x-auto">
